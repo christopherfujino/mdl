@@ -1,0 +1,35 @@
+target main {
+  const deps = [playWav];
+}
+
+target playWav {
+  const deps = [compileWav];
+
+  function build() {
+    run("mpv build/c_scale.wav");
+  }
+}
+
+target compileWav {
+  const deps = [compileMidi];
+
+  function build() {
+    run("timidity build/c_scale.midi --output-mode=w");
+  }
+}
+
+target compileMidi {
+  const deps = [pubGet];
+
+  function build() {
+    run("rm -rf build");
+    run("mkdir build");
+    run("dart ./bin/foo.dart");
+  }
+}
+
+target pubGet {
+  function build() {
+    run("dart pub get");
+  }
+}

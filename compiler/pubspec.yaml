@@ -1,0 +1,12 @@
+name: mdl
+description: 'Music Description Language'
+environment:
+  sdk: '>=2.17.0 <3.0.0'
+dependencies:
+  args: any
+  meta: any
+  midi_util:
+    path: ../third_party/midi_util
+
+dev_dependencies:
+  test: any
