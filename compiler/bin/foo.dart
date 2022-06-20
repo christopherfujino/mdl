@@ -1,44 +1,75 @@
-import 'dart:io' as io;
+//import 'dart:math' as math;
 
-import 'package:midi_util/midi_util.dart';
+import 'package:mdl/mdl.dart';
 
 Future<void> main() async {
-  const List<int> notes = [60, 62, 64, 65, 67, 69, 71, 72];
   const int track = 0;
   const int channel = 0; // ?!
-  const int bpm = 120;
-  const int start = 0; // in beats
-  const double duration = 0.5; // in beats
+  const double start = 0; // in beats
   const int volume = 127; // 0-127
+  const int bpm = 60;
+  const int startingNote = 50;
 
-  final MIDIFile file = MIDIFile(numTracks: 1);
-  file.addTempo(
-    track: track,
-    tempo: bpm,
-    time: start,
-  );
-  file.addKeySignature(
-    track: track,
-    time: start,
-    no_of_accidentals: 0,
-    accidental_mode: AccidentalMode.MAJOR,
-    accidental_type: AccidentalType.FLATS,
-  );
+  //final math.Random rand = math.Random();
 
-  for (int i = 0; i < notes.length; i += 1) {
-    file.addNote(
+  final List<MidiMessage> stream = <MidiMessage>[
+    const Tempo(track: 0, tempo: bpm),
+    const KeySignature(
       track: track,
-      channel: channel,
-      pitch: notes[i],
-      time: start + i,
-      duration: duration,
-      volume: volume,
-    );
+      time: start,
+    ),
+  ];
+
+  Iterable<Note> notes() sync* {
+    int lastTone = 0;
+    for (int i = 0; i < 30; i += 1) {
+      for (final Tone tone in Scale.diatonic.triad(lastTone).tones) {
+        yield Note(
+          track: track,
+          channel: channel,
+          pitch: Pitch(tone + startingNote),
+          time: i / 1.0,
+          duration: 1,
+          volume: volume,
+        );
+      }
+      lastTone += 1;
+    }
   }
 
-  final io.Directory build = io.Directory('build');
-  build.createSync(recursive: true);
-  // TODO make windows compat
-  final io.File outputFile = io.File('build/c_scale.midi');
-  file.writeFile(outputFile);
+  notes().forEach(stream.add);
+
+  foo(messages: stream);
+}
+
+class Scale {
+  const Scale({
+    required this.tones,
+  });
+
+  static const Scale diatonic = Scale(tones: <Tone>[
+    Tone.zero,
+    Tone.two,
+    Tone.four,
+    Tone.five,
+    Tone.seven,
+    Tone.nine,
+    Tone.eleven,
+  ]);
+
+  final List<Tone> tones;
+
+  Chord triad(int root) {
+    return Chord(<Tone>[
+      tones[root % tones.length],
+      tones[(root + 2) % tones.length],
+      tones[(root + 4) % tones.length],
+    ]);
+  }
+}
+
+class Chord {
+  const Chord(this.tones);
+
+  final List<Tone> tones;
 }
