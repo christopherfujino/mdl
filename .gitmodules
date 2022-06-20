@@ -1,3 +1,3 @@
 [submodule "third_party/midi_util"]
 	path = third_party/midi_util
-	url = git@github.com:Eghosa-Osayande/midi_util.git
+	url = https://github.com/Eghosa-Osayande/midi_util.git
