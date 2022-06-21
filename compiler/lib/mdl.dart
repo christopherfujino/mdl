@@ -1,7 +1,8 @@
 import 'dart:io' as io;
-import 'dart:math' as math;
 
 import 'package:midi_util/midi_util.dart';
+
+export 'src/common.dart';
 
 Future<void> foo({
   required Iterable<MidiMessage> messages,
@@ -15,12 +16,6 @@ Future<void> foo({
   // TODO make windows compat
   final io.File outputFile = io.File('build/c_scale.midi');
   midi.writeFile(outputFile);
-}
-
-T sample<T>(Iterable<T> samples, math.Random rand) {
-  final List<T> list = samples.toList();
-  final int idx = rand.nextInt(list.length);
-  return list[idx];
 }
 
 abstract class MidiMessage {

@@ -27,7 +27,7 @@ Future<void> main() async {
         yield Note(
           track: track,
           channel: channel,
-          pitch: Pitch(tone + startingNote),
+          pitch: Pitch(tone.value + startingNote),
           time: i / 1.0,
           duration: 1,
           volume: volume,
